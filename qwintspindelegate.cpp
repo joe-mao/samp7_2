@@ -8,6 +8,8 @@ QWIntSpinDelegate::QWIntSpinDelegate()
 
 QWidget *QWIntSpinDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
+    Q_UNUSED(option);
+    Q_UNUSED(index);
     //创建希望的代理编辑组建
     QSpinBox * editor = new QSpinBox(parent);
     editor->setFrame(false);//设置为无边框
@@ -35,6 +37,7 @@ void QWIntSpinDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
 
 void QWIntSpinDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
+    Q_UNUSED(index);
     //设置在组件大小
     editor->setGeometry(option.rect);
 }

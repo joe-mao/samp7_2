@@ -189,3 +189,10 @@ void MainWindow::on_actOpenStm_triggered()
         QMessageBox::information(this, "提示消息", "问津已经打开!");
     }
 }
+
+void MainWindow::on_actIniDataArea_triggered()
+{
+    //打开文件
+   QString curPath = QCoreApplication::applicationDirPath();
+   QString aFileName = QFileDialog::getOpenFileName(this, "打开一个文件", curPath, "井数据文件(*.txt);;所有文件(*.*)");
+}

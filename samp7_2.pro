@@ -27,11 +27,15 @@ CONFIG += c++11
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    qwintspindelegate.cpp
+    qwintspindelegate.cpp \
+    qwfloatspindelegate.cpp \
+    qwcomboboxdelegate.cpp
 
 HEADERS += \
         mainwindow.h \
-    qwintspindelegate.h
+    qwintspindelegate.h \
+    qwfloatspindelegate.h \
+    qwcomboboxdelegate.h
 
 FORMS += \
         mainwindow.ui
@@ -40,3 +44,6 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+RESOURCES += \
+    res.qrc

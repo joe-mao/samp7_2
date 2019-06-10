@@ -1,24 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow" >
-  <property name="geometry" >
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>766</width>
+    <height>509</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>MainWindow</string>
   </property>
-  <widget class="QMenuBar" name="menuBar" />
-  <widget class="QToolBar" name="mainToolBar" />
-  <widget class="QWidget" name="centralWidget" />
-  <widget class="QStatusBar" name="statusBar" />
+  <widget class="QWidget" name="centralWidget">
+   <widget class="QTableView" name="tableView">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>651</width>
+      <height>351</height>
+     </rect>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>766</width>
+     <height>23</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QToolBar" name="mainToolBar">
+   <property name="windowTitle">
+    <string>QDataStream读写文件</string>
+   </property>
+   <property name="toolButtonStyle">
+    <enum>Qt::ToolButtonTextUnderIcon</enum>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actIniDataArea"/>
+   <addaction name="separator"/>
+   <addaction name="actIni"/>
+   <addaction name="actOpenStm"/>
+   <addaction name="actSaveStm"/>
+   <addaction name="separator"/>
+   <addaction name="actOpenDat"/>
+   <addaction name="actSaveDat"/>
+   <addaction name="separator"/>
+   <addaction name="actAppend"/>
+   <addaction name="actInsert"/>
+   <addaction name="actDelete"/>
+   <addaction name="separator"/>
+   <addaction name="actExit"/>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <action name="actAppend">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/image/image/actAppend.PNG</normaloff>:/image/image/actAppend.PNG</iconset>
+   </property>
+   <property name="text">
+    <string>添加行</string>
+   </property>
+   <property name="toolTip">
+    <string>添加行</string>
+   </property>
+  </action>
+  <action name="actInsert">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/image/image/actInsert.PNG</normaloff>:/image/image/actInsert.PNG</iconset>
+   </property>
+   <property name="text">
+    <string>插入行</string>
+   </property>
+   <property name="toolTip">
+    <string>插入行</string>
+   </property>
+  </action>
+  <action name="actDelete">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/image/image/actDelete.PNG</normaloff>:/image/image/actDelete.PNG</iconset>
+   </property>
+   <property name="text">
+    <string>删除行</string>
+   </property>
+   <property name="toolTip">
+    <string>删除行</string>
+   </property>
+  </action>
+  <action name="actExit">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/image/image/actExit.PNG</normaloff>:/image/image/actExit.PNG</iconset>
+   </property>
+   <property name="text">
+    <string>退出</string>
+   </property>
+   <property name="toolTip">
+    <string>退出</string>
+   </property>
+  </action>
+  <action name="actIni">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/image/image/actIni.PNG</normaloff>:/image/image/actIni.PNG</iconset>
+   </property>
+   <property name="text">
+    <string>表格复位</string>
+   </property>
+   <property name="toolTip">
+    <string>表格复位</string>
+   </property>
+  </action>
+  <action name="actOpenStm">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/image/image/actOpenStream.PNG</normaloff>:/image/image/actOpenStream.PNG</iconset>
+   </property>
+   <property name="text">
+    <string>打开stm文件</string>
+   </property>
+   <property name="toolTip">
+    <string>打开stm文件</string>
+   </property>
+  </action>
+  <action name="actSaveStm">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/image/image/actSaveStream.PNG</normaloff>:/image/image/actSaveStream.PNG</iconset>
+   </property>
+   <property name="text">
+    <string>保存Stm文件</string>
+   </property>
+   <property name="toolTip">
+    <string>保存Stm文件</string>
+   </property>
+  </action>
+  <action name="actOpenDat">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/image/image/actOpenData.PNG</normaloff>:/image/image/actOpenData.PNG</iconset>
+   </property>
+   <property name="text">
+    <string>打开dat文件</string>
+   </property>
+   <property name="toolTip">
+    <string>打开dat文件</string>
+   </property>
+  </action>
+  <action name="actSaveDat">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/image/image/actSaveData.PNG</normaloff>:/image/image/actSaveData.PNG</iconset>
+   </property>
+   <property name="text">
+    <string>保存dat文件</string>
+   </property>
+   <property name="toolTip">
+    <string>保存dat文件</string>
+   </property>
+  </action>
+  <action name="actIniDataArea">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/image/image/actViewData.PNG</normaloff>:/image/image/actViewData.PNG</iconset>
+   </property>
+   <property name="text">
+    <string>初始化表格数据</string>
+   </property>
+   <property name="toolTip">
+    <string>初始化表格数据</string>
+   </property>
+  </action>
  </widget>
- <layoutDefault spacing="6" margin="11" />
- <pixmapfunction></pixmapfunction>
- <resources/>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources>
+  <include location="res.qrc"/>
+ </resources>
  <connections/>
 </ui>

@@ -1,0 +1,14 @@
+<RCC>
+    <qresource prefix="/image">
+        <file>image/actAppend.PNG</file>
+        <file>image/actDelete.PNG</file>
+        <file>image/actExit.PNG</file>
+        <file>image/actInsert.PNG</file>
+        <file>image/actIni.PNG</file>
+        <file>image/actOpenData.PNG</file>
+        <file>image/actOpenStream.PNG</file>
+        <file>image/actSaveData.PNG</file>
+        <file>image/actSaveStream.PNG</file>
+        <file>image/actViewData.PNG</file>
+    </qresource>
+</RCC>
