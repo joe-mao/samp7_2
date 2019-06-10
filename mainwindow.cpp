@@ -44,14 +44,13 @@ void MainWindow::on_actSaveStm_triggered()
     }
 }
 
-void MainWindow::resetTable(int aRowCount)
+void MainWindow::resetTable(int aRowCount, QStringList & headerList)
 {
     //表格复位
     theModel->removeRows(0, theModel->rowCount());
     theModel->setRowCount(aRowCount);
+    theModel->setHorizontalHeaderLabels(headerList);
     QString str = theModel->headerData(theModel->columnCount() - 1, Qt::Horizontal, Qt::DisplayRole).toString();
-    qDebug()<<str;
-    return;
     for(int i = 0; i < theModel->rowCount(); ++i){
         //设置最后一列
         QModelIndex index = theModel->index(i, FixedColumnCount - 1);
@@ -125,12 +124,17 @@ bool MainWindow::openDataAsStream(QString &aFileName)
     qint32 rowCount, colCount;
     aStream>>rowCount;//读取行数
     aStream>>colCount;//读取列数
-    this->resetTable(rowCount);//表格复位，设定行数
     //获取表头文字，但并不使用
+    QStringList headerList;
     QString str;
     for(int i = 0; i < colCount; ++i){
         aStream>>str;//读取表头字符串
+        headerList<<str;
     }
+
+    this->resetTable(rowCount, headerList);//表格复位，设定行数
+
+
     //读取数据区
     qint32 ceShen;
     qreal chuiShen, fangWei, weiYi;
@@ -172,8 +176,39 @@ bool MainWindow::openDataAsStream(QString &aFileName)
         }else{
             aItem->setCheckState(Qt::Unchecked);
         }
-        aFile.close();
-        return true;
+
+    }
+     aFile.close();
+    return true;
+}
+
+void MainWindow::iniModelFromStringList(QStringList & aFileContent)
+{
+    int rowCnt = aFileContent.count();//文本行数
+    theModel->setRowCount(rowCnt - 1);
+    QString header = aFileContent.at(0);
+    QStringList headerList = header.split(QRegExp("\\s+"), QString::SkipEmptyParts);
+    theModel->setHorizontalHeaderLabels(headerList);//设置表头文字
+    //设置表格数据
+    QStandardItem * aItem;
+    QStringList tmpList;
+    int j;
+    for(int i = 1; i < rowCnt; ++i){
+        QString aLineText = aFileContent.at(i);
+        tmpList = aLineText.split(QRegExp("\\s+"), QString::SkipEmptyParts);
+        for(j = 0; j < FixedColumnCount-1; j ++){
+            //不包含最后一列
+            aItem = new QStandardItem(tmpList.at(j));
+            theModel->setItem(i - 1, j, aItem);//为模型的某行列位置设置Item
+        }
+        aItem = new QStandardItem(headerList.at(j));//最后一列
+        aItem->setCheckable(true);//使单元格编程CheckBox状态
+        if(tmpList.at(j) == "0"){
+            aItem->setCheckState(Qt::Unchecked);
+        }else{
+            aItem->setCheckState(Qt::Checked);
+        }
+        theModel->setItem(i - 1, j, aItem);
     }
 }
 
@@ -186,6 +221,40 @@ void MainWindow::on_actOpenStm_triggered()
         return;
     }
     if(openDataAsStream(aFileName)){
-        QMessageBox::information(this, "提示消息", "问津已经打开!");
+        QMessageBox::information(this, "提示消息", "文件已经打开!");
     }
+}
+
+void MainWindow::on_actIniDataArea_triggered()
+{
+    //使用文本文件先初始化表格数据
+    QString curPath = QCoreApplication::applicationDirPath();
+    QString aFileName = QFileDialog::getOpenFileName(this, "打开一个文件", curPath, "井数据文件(*.txt);;所有文件(*.*)");
+    if(aFileName.isEmpty()){
+        return;
+    }
+    QStringList fFileContent;
+    QFile aFile(aFileName);
+    if(aFile.open(QIODevice::ReadOnly | QIODevice::Text)){
+        //打开文件
+        QTextStream aStream(&aFile);
+        while(!aStream.atEnd()){
+            QString str = aStream.readLine();
+            fFileContent.append(str);
+        }
+    }
+    aFile.close();
+    iniModelFromStringList(fFileContent);
+
+}
+
+void MainWindow::on_actSaveDat_triggered()
+{
+    //保存dat文件
+
+}
+
+void MainWindow::on_actIni_triggered()
+{
+
 }

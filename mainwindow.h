@@ -28,6 +28,12 @@ private slots:
     
     void on_actOpenStm_triggered();
     
+    void on_actIniDataArea_triggered();
+
+    void on_actSaveDat_triggered();
+
+    void on_actIni_triggered();
+
 private:
     Ui::MainWindow *ui;
     QLabel * LabCellPos;//当前单元格的行列号
@@ -38,11 +44,13 @@ private:
     QWComboBoxDelegate comboBoxDelegate;//列表选择，代理组件
     QStandardItemModel * theModel;//数据模型
     QItemSelectionModel * theSelection;//选择模型
-    void resetTable(int aRowCount);//表格复位，设定行数
+    void resetTable(int aRowCount, QStringList & headerList);//表格复位，设定行数
     bool saveDataAsStream(QString & aFileName);//保存为stm文件
     bool openDataAsStream(QString & aFileName);//打开stm文件
     bool saveBinaryFile(QString & aFileName);//保存为dat文件
     bool openBinaryFile(QString & aFileName);//打开dat文件
+
+    void iniModelFromStringList(QStringList & aFileContent);//初始化数据模型
 
 
 
