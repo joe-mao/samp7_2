@@ -34,6 +34,8 @@ private slots:
 
     void on_actIni_triggered();
 
+    void on_actOpenDat_triggered();
+
 private:
     Ui::MainWindow *ui;
     QLabel * LabCellPos;//当前单元格的行列号

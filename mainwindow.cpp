@@ -179,6 +179,135 @@ bool MainWindow::openDataAsStream(QString &aFileName)
 
     }
      aFile.close();
+     return true;
+}
+
+bool MainWindow::saveBinaryFile(QString &aFileName)
+{
+    //保存为dat文件
+    QFile aFile(aFileName);
+    if(!(aFile.open(QIODevice::WriteOnly))){
+        return false;
+    }
+    QDataStream aStream(&aFile);
+    aStream.setByteOrder(QDataStream::LittleEndian);//小端字节序
+    qint32 rowCount = theModel->rowCount();
+    qint32 colCount = theModel->columnCount();
+    aStream.writeRawData((char *)&rowCount, sizeof(qint32));
+    aStream.writeRawData((char *)&colCount, sizeof (qint32));
+    //获取表头文字
+    QByteArray btArray;
+    QStandardItem * aItem;
+    for(int i = 0; i < theModel->columnCount(); ++i){
+        aItem = theModel->horizontalHeaderItem(i);//获取表头item
+        QString str = aItem->text();//获取表头文字
+        btArray = str.toUtf8();//转换为字符数组
+        aStream.writeBytes(btArray, static_cast<quint32>(btArray.length()));//写入字符串数据
+    }
+    //获取表格区数据
+    qint8 yes = 1, no = 0;
+    for (int i = 0; i < theModel->rowCount(); ++i) {
+        aItem = theModel->item(i, 0);//测深
+        qint32 ceShen = aItem->data(Qt::DisplayRole).toInt();
+        aStream.writeRawData((char *)&ceShen, sizeof(qint32));
+
+        aItem = theModel->item(i, 1);//垂深
+        qreal chuiShen = aItem->data(Qt::DisplayRole).toDouble();
+        aStream.writeRawData((char *)&chuiShen, sizeof(qreal));
+
+        aItem = theModel->item(i, 2);//方位
+        qreal fangWei = aItem->data(Qt::DisplayRole).toDouble();
+        aStream.writeRawData((char *)&fangWei, sizeof(qreal));
+
+        aItem = theModel->item(i, 3);//位移
+        qreal weiYi = aItem->data(Qt::DisplayRole).toDouble();
+        aStream.writeRawData((char *)&weiYi, sizeof(qreal));
+
+        aItem = theModel->item(i, 4);//固＃质量
+        QString zhiLiang = aItem->data(Qt::DisplayRole).toString();
+        btArray = zhiLiang.toUtf8();
+        aStream.writeBytes(btArray, static_cast<quint32>(btArray.length()));//写字符串数据
+
+        aItem = theModel->item(i, 5);//测#取样
+        bool quYang = (aItem->checkState() == Qt::Checked);
+        if(quYang){
+            aStream.writeRawData((char *)&yes, sizeof(qint8));
+        }else{
+            aStream.writeRawData((char *)&no, sizeof(qint8));
+        }
+    }
+    aFile.close();
+    return true;
+}
+
+bool MainWindow::openBinaryFile(QString &aFileName)
+{
+    //打开dat文件
+    QFile aFile(aFileName);
+    if(!aFile.open(QIODevice::ReadOnly)){
+        return false;
+    }
+    QDataStream aStream(&aFile);
+    aStream.setByteOrder(QDataStream::LittleEndian);
+
+    qint32 rowCount, colCount;
+    QStringList HeaderList;
+    aStream.readRawData((char *)&rowCount, sizeof(qint32));
+    aStream.readRawData((char *)&colCount, sizeof(qint32));
+    //读取表头文字
+    char * buf;
+    uint strLen;
+    for(int i = 0; i < colCount; ++i){
+        aStream.readBytes(buf, strLen);//同时读取字符串长度和字符串内容
+        HeaderList<<QString(buf);
+    }
+    this->resetTable(rowCount, HeaderList);
+    //读取数据区域
+    QStandardItem * aItem;
+    qint32 ceShen;
+    qreal chuiShen, fangWei, weiYi;
+    QString zhiLiang;
+    qint8 quYang;// 1 == true, 0 == false
+    QModelIndex index;
+    for(int i = 0; i < rowCount; ++i){
+        aStream.readRawData((char *)&ceShen, sizeof(qint32));//测深
+        index = theModel->index(i, 0);
+        aItem = theModel->itemFromIndex(index);
+        aItem->setData(ceShen, Qt::DisplayRole);
+
+        aStream.readRawData((char *)&chuiShen, sizeof(qreal));//垂深
+        index = theModel->index(i, 1);
+        aItem = theModel->itemFromIndex(index);
+        aItem->setData(chuiShen, Qt::DisplayRole);
+
+        aStream.readRawData((char *)&fangWei, sizeof(qreal));//方位
+        index = theModel->index(i, 2);
+        aItem = theModel->itemFromIndex(index);
+        aItem->setData(fangWei, Qt::DisplayRole);
+
+        aStream.readRawData((char *)&weiYi, sizeof(qreal));//位移
+        index = theModel->index(i, 3);
+        aItem = theModel->itemFromIndex(index);
+        aItem->setData(weiYi, Qt::DisplayRole);
+
+        aStream.readBytes(buf, strLen);//固＃质量
+        zhiLiang = QString::fromLocal8Bit(buf, strLen);
+        index = theModel->index(i, 4);
+        aItem = theModel->itemFromIndex(index);
+        aItem->setData(zhiLiang, Qt::DisplayRole);
+
+        aStream.readRawData((char *)&quYang, sizeof(qint8));//测井取样
+        index = theModel->index(i, 5);
+        aItem = theModel->itemFromIndex(index);
+        if(quYang == 1){
+            aItem->setCheckState(Qt::Checked);
+        }else{
+            aItem->setCheckState(Qt::Unchecked);
+        }
+
+    }
+
+    aFile.close();
     return true;
 }
 
@@ -251,10 +380,32 @@ void MainWindow::on_actIniDataArea_triggered()
 void MainWindow::on_actSaveDat_triggered()
 {
     //保存dat文件
-
+    QString curPath = QDir::currentPath();
+    QString aFileName = QFileDialog::getSaveFileName(this, "选择保存文件", curPath, "标准编码数据文件(*.dat)");
+    if(aFileName.isEmpty()){
+        return;
+    }
+    if(saveBinaryFile(aFileName)){
+        QMessageBox::information(this, "提示消息", "文件已经成功保存!");
+    }
 }
+
+
 
 void MainWindow::on_actIni_triggered()
 {
 
+}
+
+void MainWindow::on_actOpenDat_triggered()
+{
+    //打开dat文件
+    QString curPath = QDir::currentPath();
+    QString aFileName = QFileDialog::getOpenFileName(this, "选择要打开的文件", curPath, "标准编码数据文件(*.dat)");
+    if(aFileName.isEmpty()){
+        return;
+    }
+    if(openBinaryFile(aFileName)){
+        QMessageBox::information(this, "提示消息", "打开文件成功!");
+    }
 }
